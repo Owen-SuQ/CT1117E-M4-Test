@@ -66,7 +66,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (htim == &htim8)
     {
         ucSec = ucSec + 1;
-        LED_Process(&ledODR, direction);
+        //LED_Process(&ledODR, direction);
         LCD_Proc();
     }
 }
