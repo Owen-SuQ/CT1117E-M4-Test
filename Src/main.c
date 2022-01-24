@@ -67,7 +67,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         ucSec = ucSec + 1;
         //LED_Process(&ledODR, direction);
-        LCD_Proc();
+        //LCD_Proc();
     }
 }
 /* USER CODE END 0 */
