@@ -14,8 +14,8 @@
 
 void LED_Process(uint8_t *ledODR, uint8_t direction)
 {
-    //LED_Displacement(ledODR, direction);
-    LED_Toggle(8);
+    LED_Displacement(ledODR, direction);
+    //LED_Toggle(8);
     LED_Unlock();
     //LED_Display(ledODR);
 }

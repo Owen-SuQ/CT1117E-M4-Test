@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -47,10 +48,11 @@
 /* USER CODE BEGIN PV */
 uint8_t ledODR = 7;
 uint8_t direction = 0;
-uint8_t ucLcd[21];                        /* LCD ˝æ› */
-//uint16_t usLcd;                         /* LCDÀ¢–¬ ±º‰ */
+uint8_t ucLcd[21];                        /* LCDÈèÅÁâàÂµÅ */
+//uint16_t usLcd;                         /* LCDÈçíÈîãÊüäÈèÉÂ†ïÊ£ø */
 uint8_t ucSec = 100;
 uint8_t ucCnt = 10;
+uint8_t cmd = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,8 +68,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (htim == &htim8)
     {
         ucSec = ucSec + 1;
-        //LED_Process(&ledODR, direction);
-        //LCD_Proc();
+
+        LCD_Proc();
+
+        LED_Process(&ledODR, direction);
+    }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART1)
+    {
+        if (cmd == 0xA1)
+        {
+            direction = 1;
+            HAL_UART_Transmit(&huart1, "Right!\r\n", sizeof("Right!\r\n"), 10000);
+        }
+        if (cmd == 0xA2)
+        {
+            direction = 0;
+            HAL_UART_Transmit(&huart1, "left!\r\n", sizeof("left!\r\n"), 10000);
+        }
+        HAL_UART_Receive_IT(&huart1, &cmd, 1);
     }
 }
 /* USER CODE END 0 */
@@ -101,20 +123,21 @@ int main(void)
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
     MX_TIM8_Init();
+    MX_USART1_UART_Init();
     /* USER CODE BEGIN 2 */
     HAL_TIM_Base_Start_IT(&htim8);
     //HAL_Delay(500);
-    LCD_Init();                                   /* LCD≥ı ºªØ */
-    LCD_Clear(Black);                       /* LCD«Â∆¡ */
-    LCD_SetTextColor(White);                /* …Ë÷√◊÷∑˚ */
-    LCD_SetBackColor(Black);                /* …Ë÷√±≥æ∞ */
+    LCD_Init();                                   /* LCDÈçíÊøÜÓùêÈçñ? */
+    LCD_Clear(Black);                       /* LCDÂ®ìÂë≠ÁùÜ */
+    LCD_SetTextColor(White);                /* ÁíÅÂâßÁñÜÁÄõÊ•ÉÓÉÅ */
+    LCD_SetBackColor(Black);                /* ÁíÅÂâßÁñÜÈë≥Â±æÊ´ô */
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1)
     {
-
+        HAL_UART_Receive_IT(&huart1, &cmd, 1);
         //HAL_Delay(500);
         /* USER CODE END WHILE */
 
@@ -132,6 +155,7 @@ void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
     /** Configure the main internal regulator output voltage
     */
@@ -165,10 +189,18 @@ void SystemClock_Config(void)
     {
         Error_Handler();
     }
+    /** Initializes the peripherals clocks
+    */
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+    PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    {
+        Error_Handler();
+    }
 }
 
 /* USER CODE BEGIN 4 */
-void LCD_Proc(void)                /* LCD¥¶¿Ì */
+void LCD_Proc(void)                /* LCDÊæ∂Âã≠ÊÇä */
 {
     sprintf((char *) ucLcd, " SEC:%03u   CNT:%03u ", ucSec, ucCnt);
     LCD_DisplayStringLine(Line2, ucLcd);
