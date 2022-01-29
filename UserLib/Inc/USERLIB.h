@@ -9,5 +9,6 @@
 #include "led.h"
 #include "lcd.h"
 #include "timer.h"
+#include "usart.h"
 
 #endif //USERLIB_H

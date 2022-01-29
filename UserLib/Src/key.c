@@ -10,7 +10,7 @@ static KEY_FIFO_T s_tKey;                        /* 按键FIFO变量,结构体 *
 
 static void KEY_FIFO_Init(void);
 
-static void KEY_GPIO_Config(void);
+//static void KEY_GPIO_Config(void);
 
 static uint8_t IsKey1Down(void);
 

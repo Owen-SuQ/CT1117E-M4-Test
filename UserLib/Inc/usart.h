@@ -5,4 +5,7 @@
 #ifndef USART_H
 #define USART_H
 
+#include "main.h"
+
+
 #endif //USART_H

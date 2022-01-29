@@ -22,6 +22,9 @@ led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_gpio_ex.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dma.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dma_ex.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_cortex.h
+led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_adc.h
+led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_adc.h
+led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_adc_ex.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_exti.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h
@@ -30,7 +33,11 @@ led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim.h
 led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h
+led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h
+led-test\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h
+led-test\main.o: ../Inc/adc.h
 led-test\main.o: ../Inc/tim.h
+led-test\main.o: ../Inc/usart.h
 led-test\main.o: ../Inc/gpio.h
 led-test\main.o: ..\UserLib\Inc\USERLIB.h
 led-test\main.o: ..\UserLib\Inc\key.h
@@ -38,3 +45,5 @@ led-test\main.o: ..\UserLib\Inc\led.h
 led-test\main.o: D:\Program Files (x86)\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 led-test\main.o: ..\UserLib\Inc\lcd.h
 led-test\main.o: ..\UserLib\Inc\timer.h
+led-test\main.o: ..\UserLib\Inc\usart.h
+led-test\main.o: D:\Program Files (x86)\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

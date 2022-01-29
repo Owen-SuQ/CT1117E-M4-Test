@@ -3,7 +3,6 @@
 //
 
 #include "usart.h"
-#include "stdio.h"
 
 void UART1_Transmit(uint8_t *Data)
 {

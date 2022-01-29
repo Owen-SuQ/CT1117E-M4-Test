@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -27,6 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "USERLIB.h"
 #include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,11 +50,12 @@
 /* USER CODE BEGIN PV */
 uint8_t ledODR = 7;
 uint8_t direction = 0;
-uint8_t ucLcd[21];                        /* LCD鏁版嵁 */
+uint8_t ucLcd[21];                        /* LCD鏁版�? */
 //uint16_t usLcd;                         /* LCD鍒锋柊鏃堕棿 */
 uint8_t ucSec = 100;
 uint8_t ucCnt = 10;
 uint8_t cmd = 0;
+uint32_t ADC_Value = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -72,7 +75,25 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         LCD_Proc();
 
         LED_Process(&ledODR, direction);
+
+        HAL_ADC_Start_IT(&hadc1);
+
     }
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    HAL_ADC_Stop_IT(&hadc1);     //����ADCת��
+    //HAL_ADC_PollForConversion(&hadc1, 50);   //�ȴ�ת����ɣ�50Ϊ���ȴ�ʱ�䣬��λΪms
+
+
+//    if (HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc1), HAL_ADC_STATE_REG_EOC))
+//    {
+    ADC_Value = HAL_ADC_GetValue(&hadc1);
+    sprintf((char *) ucLcd, " ADC1:%03u", ADC_Value);
+    LCD_DisplayStringLine(Line2, ucLcd);
+    //HAL_UART_Transmit(&huart1, ADC_Value, sizeof(ADC_Value), 1000);
+//    }
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -82,12 +103,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         if (cmd == 0xA1)
         {
             direction = 1;
-            HAL_UART_Transmit(&huart1, "Right!\r\n", sizeof("Right!\r\n"), 10000);
+            HAL_UART_Transmit(&huart1, "Right!\n", sizeof("Right!\n"), 10000);
         }
         if (cmd == 0xA2)
         {
             direction = 0;
-            HAL_UART_Transmit(&huart1, "left!\r\n", sizeof("left!\r\n"), 10000);
+            HAL_UART_Transmit(&huart1, "left!\n", sizeof("left!\n"), 10000);
         }
         HAL_UART_Receive_IT(&huart1, &cmd, 1);
     }
@@ -124,20 +145,25 @@ int main(void)
     MX_GPIO_Init();
     MX_TIM8_Init();
     MX_USART1_UART_Init();
+    MX_ADC1_Init();
     /* USER CODE BEGIN 2 */
     HAL_TIM_Base_Start_IT(&htim8);
     //HAL_Delay(500);
     LCD_Init();                                   /* LCD鍒濆鍖? */
-    LCD_Clear(Black);                       /* LCD娓呭睆 */
-    LCD_SetTextColor(White);                /* 璁剧疆瀛楃 */
+    LCD_Clear(Black);                       /* LCD娓呭�? */
+    LCD_SetTextColor(White);                /* 璁剧疆�?�楃�? */
     LCD_SetBackColor(Black);                /* 璁剧疆鑳屾櫙 */
+
+    HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);    //ADУ׼
+
+    HAL_UART_Receive_IT(&huart1, &cmd, 1);
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1)
     {
-        HAL_UART_Receive_IT(&huart1, &cmd, 1);
+
         //HAL_Delay(500);
         /* USER CODE END WHILE */
 
@@ -191,8 +217,9 @@ void SystemClock_Config(void)
     }
     /** Initializes the peripherals clocks
     */
-    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_ADC12;
     PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+    PeriphClkInit.Adc12ClockSelection = RCC_ADC12CLKSOURCE_SYSCLK;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
     {
         Error_Handler();
@@ -200,10 +227,17 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void LCD_Proc(void)                /* LCD澶勭悊 */
+void LCD_Proc(void)                /* LCD澶勭�? */
 {
     sprintf((char *) ucLcd, " SEC:%03u   CNT:%03u ", ucSec, ucCnt);
-    LCD_DisplayStringLine(Line2, ucLcd);
+    LCD_DisplayStringLine(Line1, ucLcd);
+//    LCD_DisplayStringLine(Line2, ucLcd);
+//    LCD_DisplayStringLine(Line3, ucLcd);
+//    LCD_DisplayStringLine(Line4, ucLcd);
+//    LCD_DisplayStringLine(Line5, ucLcd);
+//    LCD_DisplayStringLine(Line6, ucLcd);
+//    LCD_DisplayStringLine(Line7, ucLcd);
+//    LCD_DisplayStringLine(Line8, ucLcd);
 }
 /* USER CODE END 4 */
 

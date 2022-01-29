@@ -65,6 +65,8 @@ void PendSV_Handler(void);
 
 void SysTick_Handler(void);
 
+void ADC1_2_IRQHandler(void);
+
 void USART1_IRQHandler(void);
 
 void TIM8_UP_IRQHandler(void);
